@@ -20,13 +20,11 @@ export default {
             ],
           },
         });
-
         if (existingUser) {
-          throw new Error("This username/email is already taken.");
+          throw new Error("This username/password is already taken.");
         }
-
         const uglyPassword = await bcrypt.hash(password, 10);
-        return client.user.create({
+        await client.user.create({
           data: {
             username,
             email,
@@ -35,8 +33,14 @@ export default {
             password: uglyPassword,
           },
         });
+        return {
+          ok: true,
+        };
       } catch (e) {
-        return e;
+        return {
+          ok: false,
+          error: "Cant create account.",
+        };
       }
     },
   },
